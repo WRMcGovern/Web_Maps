@@ -1,0 +1,61 @@
+# Adds a definition query to all layers in a web map that have a TAG field to filter out any records that don't have a Null value in the TAG field.
+
+"""
+Script documentation
+"""
+import arcpy
+
+# Optional map name parameter (used as fallback)
+map_name = arcpy.GetParameterAsText(0)
+
+aprx = arcpy.mp.ArcGISProject("CURRENT")
+
+# Try to use active map first
+m = aprx.activeMap
+
+# Fallback to map name if no active map
+if m is None:
+    arcpy.AddMessage("No active map found. Falling back to map name parameter.")
+    
+    for map_obj in aprx.listMaps():
+        if map_obj.name == map_name:
+            m = map_obj
+            break
+
+# If still no map found, error out
+if m is None:
+    arcpy.AddError("No active map and no valid map name provided.")
+    raise SystemExit
+
+arcpy.AddMessage(f"Using map: {m.name}")
+
+# Apply TAG IS NULL definition query to valid layers
+for lyr in m.listLayers():
+    if lyr.supports("DEFINITIONQUERY") and lyr.supports("DATASOURCE"):
+
+        try:
+            fields = [f.name.upper() for f in arcpy.ListFields(lyr.dataSource)]
+
+            if "TAG" in fields:
+                definition_query = "TAG IS NULL"
+                query_name = "<NULL>"
+
+                cim = lyr.getDefinition('V2')
+
+                if hasattr(cim.featureTable, "definitionFilterChoices"):
+                    cim.featureTable.definitionFilterChoices = [{
+                        "name": query_name,
+                        "definitionExpression": definition_query
+                    }]
+
+                cim.featureTable.definitionExpression = definition_query
+                lyr.setDefinition(cim)
+
+                arcpy.AddMessage(f"Applied query '{query_name}' to {lyr.name}")
+            else:
+                arcpy.AddMessage(f"Skipped {lyr.name} (no TAG field)")
+
+        except Exception as e:
+            arcpy.AddWarning(f"Skipped {lyr.name} (error accessing fields): {e}")
+
+arcpy.AddMessage("TAG IS NULL definition query applied where applicable!")
