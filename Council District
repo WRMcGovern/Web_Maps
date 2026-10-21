@@ -1,0 +1,4 @@
+return { 
+	type : 'text', 
+	text : "Council District: " + $feature.council_district
+}
