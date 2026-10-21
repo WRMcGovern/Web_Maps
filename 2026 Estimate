@@ -1,0 +1,4 @@
+return { 
+	type : 'text', 
+	text : "2026 Inflation Adjusted Estimate: $" + text($feature.f2026_estimate_____23_37__infla, '#,###.00')
+}
