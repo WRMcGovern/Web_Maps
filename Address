@@ -1,0 +1,4 @@
+return { 
+	type : 'text', 
+	text : "Address: " + proper($feature.address)
+}
