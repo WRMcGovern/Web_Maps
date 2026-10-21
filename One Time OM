@@ -2,5 +2,5 @@ var OMCost = Text($feature.one_time_o_m,'#,###.00')
 
 return { 
 	type : 'text', 
-	text : IIf(IsEmpty(OMCost), null, "Ongoing Operations and Maintenance Estimate: $" + OMCost)
+	text : IIf(IsEmpty(OMCost), null, "One Time Operations and Maintenance Estimate: $" + OMCost)
 }
