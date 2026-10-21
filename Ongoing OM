@@ -1,0 +1,6 @@
+var OMCost = Text($feature.ongoing_o_m,'#,###.00')
+
+return { 
+	type : 'text', 
+	text : IIf(IsEmpty($feature.ongoing_o_m), null, "Ongoing Operations and Maintenance Estimate: $" + OMCost)
+}
