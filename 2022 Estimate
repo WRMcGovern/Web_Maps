@@ -1,0 +1,4 @@
+return { 
+	type : 'text', 
+	text : "2022 Estimate: $" + text($feature.f2022_estimate, '#,###.00')
+}
